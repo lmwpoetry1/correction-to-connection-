@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A guided reflection tool from BlackECE: From Correction to Connection.">
+<title>Correction to Connection Reflection Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a single guided column, like a pocket card — five reflection moves in order, then reframe, family, commitment, and a copyable summary. */
+:root{
+  --bg:#f5f6f1; --surface:#ffffff; --ink:#18201b; --muted:#56615a; --line:#d9ddd3;
+  --green:#0f6b3a; --green-soft:#e3f0e7; --red:#b42326; --red-soft:#f8e4e3;
+  --gold:#e8a91a; --gold-soft:#fbf0d4; --black:#17140f;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101512; --surface:#18201b; --ink:#eef2ec; --muted:#a6b1a9; --line:#2d3830;
+  --green:#4fc27e; --green-soft:#16301f; --red:#f07170; --red-soft:#3a1a1a;
+  --gold:#f2bf47; --gold-soft:#352a10; --black:#eef2ec; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101512; --surface:#18201b; --ink:#eef2ec; --muted:#a6b1a9; --line:#2d3830;
+  --green:#4fc27e; --green-soft:#16301f; --red:#f07170; --red-soft:#3a1a1a;
+  --gold:#f2bf47; --gold-soft:#352a10; --black:#eef2ec; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+p{margin:0}
+.flag{display:flex;height:6px;margin:0 -16px}
+.flag span{flex:1}
+header{padding-block:32px 24px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+section{grid-template-columns:minmax(0,1fr)}
+.eyebrow{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--red)}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;color:var(--green);letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:62ch}
+
+.mode{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px;width:fit-content;max-width:100%;flex-wrap:wrap}
+.mode button{font:inherit;font-size:15px;border:0;background:transparent;color:var(--muted);padding:8px 16px;border-radius:999px;cursor:pointer;font-weight:700}
+.mode button[aria-pressed="true"]{background:var(--green);color:var(--bg)}
+.mode-note{font-size:14.5px;color:var(--muted)}
+
+section{padding-block:28px;border-top:1px solid var(--line);display:grid;gap:16px}
+.sec-head{display:flex;gap:14px;align-items:flex-start}
+.badge{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:17px;color:#fff}
+.b-green{background:#0f6b3a}.b-red{background:#b42326}.b-gold{background:#e8a91a;color:#17140f}.b-black{background:#17140f}
+:root[data-theme="dark"] .b-black{background:#3b4a40}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .b-black{background:#3b4a40}}
+.sec-head h2{font-size:24px;font-weight:700}
+.sec-head p{color:var(--muted);font-size:15.5px;margin-top:4px}
+
+label,.qlabel{display:block;font-weight:700;margin-bottom:6px}
+.hint{font-weight:400;color:var(--muted);font-size:14.5px;display:block}
+textarea,input[type=text]{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical}
+textarea{min-height:70px}
+textarea:focus,input:focus,button:focus-visible,select:focus{outline:3px solid var(--gold);outline-offset:1px}
+.field{display:grid;gap:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:620px){.grid2{grid-template-columns:1fr}}
+
+/* language features */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green-soft);border-color:var(--green);color:var(--green);font-weight:700}
+.feature-out{display:grid;gap:8px}
+.feature-card{background:var(--green-soft);border-radius:10px;padding:12px 14px;font-size:15.5px}
+.feature-card b{color:var(--green)}
+.feature-card em{font-style:normal;font-weight:700}
+
+/* pattern check */
+.pattern{display:grid;gap:10px}
+.prow{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:10px}
+.prow h3{font-size:16px;font-weight:700;font-family:var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{font:inherit;font-size:15.5px;text-align:left;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;line-height:1.4}
+.opt small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.opt.c small{color:var(--red)} .opt.k small{color:var(--green)}
+.opt.c[aria-pressed="true"]{border-color:var(--red);background:var(--red-soft)}
+.opt.k[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft)}
+.tally{font-size:15.5px;padding:12px 14px;border-radius:10px;background:var(--gold-soft)}
+
+/* arc */
+.arc{display:grid;gap:4px}
+.move{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.move:last-child{border-bottom:0}
+.move-name{font-family:var(--display);font-weight:800;font-size:19px;color:var(--green);padding-top:2px}
+.move-name span{display:block;font-family:var(--body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.move-body{min-width:0;display:grid;gap:10px}
+.q{font-weight:700}
+@media (max-width:520px){.move{grid-template-columns:1fr;gap:6px}}
+
+/* reframe bank */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font:inherit;font-size:14.5px;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--black);color:var(--bg);border-color:var(--black)}
+.bank{display:grid;gap:8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.pair div{padding:10px 12px;font-size:15.5px;min-width:0}
+.pair .no{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:1.5px;border-right:1px solid var(--line)}
+.pair .yes{color:var(--ink);font-weight:700;display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.use{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--green);color:var(--green);background:transparent;border-radius:999px;padding:3px 10px;cursor:pointer;flex:none}
+.colhead{display:grid;grid-template-columns:1fr 1fr;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);padding:0 12px}
+@media (max-width:520px){.pair{grid-template-columns:1fr}.pair .no{border-right:0;border-bottom:1px solid var(--line)}.colhead{display:none}}
+.movechips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* family */
+.fam-quote{font-family:var(--display);font-size:21px;font-weight:700;line-height:1.3;border-left:4px solid var(--gold);padding-left:14px}
+.fam-quote span{color:var(--green)}
+.callout{background:var(--gold-soft);border-radius:10px;padding:12px 14px;font-size:15.5px}
+
+/* commitment */
+.commit-stem{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.3}
+.starters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.starters{grid-template-columns:1fr}}
+.starter{font:inherit;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:15px}
+.starter small{display:block;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+
+/* summary */
+.summary{background:var(--surface);border:2px solid var(--green);border-radius:var(--r);padding:18px;display:grid;gap:14px}
+.summary pre{white-space:pre-wrap;word-wrap:break-word;font-family:var(--body);font-size:15.5px;margin:0;max-height:420px;overflow:auto;color:var(--ink)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:700;font-size:15.5px;border-radius:999px;padding:10px 20px;cursor:pointer;border:1.5px solid var(--green)}
+.btn.primary{background:var(--green);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--green)}
+.btn.danger{background:transparent;color:var(--red);border-color:var(--red)}
+.status{font-size:14.5px;color:var(--muted)}
+.confirm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:15px}
+
+footer{padding-block:28px 0;border-top:1px solid var(--line);font-size:14px;color:var(--muted);display:grid;gap:6px}
+footer a{color:var(--green)}
+@media (prefers-reduced-motion:no-preference){.btn,.chip,.opt,.tab{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+
+<div class="flag" aria-hidden="true"><span style="background:#b42326"></span><span style="background:#17140f"></span><span style="background:#0f6b3a"></span><span style="background:#e8a91a"></span></div>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">BlackECE · From Correction to Connection</p>
+  <h1>Correction to Connection Reflection Tool</h1>
+  <p class="lede">Think back to one moment when a child's home language met a correction, or could have. Work through it step by step, then leave with a reframe, a family question, and one shift to try on Monday. Your notes stay on this device.</p>
+  <div class="mode" role="group" aria-label="Who is reflecting">
+    <button type="button" id="mode-self" aria-pressed="true" data-mode="self">On my own practice</button>
+    <button type="button" id="mode-coach" aria-pressed="false" data-mode="coach">Coaching a provider</button>
+  </div>
+  <p class="mode-note" id="modeNote">You're reflecting on a moment from your own work with a child.</p>
+</header>
+
+<!-- 1 -->
+<section aria-labelledby="h1s">
+  <div class="sec-head"><div class="badge b-green">1</div><div><h2 id="h1s">Capture the moment</h2><p>Write down what was said, word for word if you can.</p></div></div>
+  <div class="field"><label for="childSaid">The child said…</label><input type="text" id="childSaid" placeholder="“He be jumpin’ on the couch!”"></div>
+  <div class="field"><label for="adultSaid"><span class="js-adult">I said or did…</span></label><input type="text" id="adultSaid" placeholder="“Say it the right way: he IS jumping.”"></div>
+  <div class="field"><label for="childResponse">Then the child…<span class="hint">Did they keep talking, go quiet, repeat, look away, light up?</span></label><input type="text" id="childResponse" placeholder="Stopped the story and went back to playing."></div>
+</section>
+
+<!-- 2 -->
+<section aria-labelledby="h2s">
+  <div class="sec-head"><div class="badge b-red">2</div><div><h2 id="h2s">Hear the rules</h2><p>Black Language is rule-governed. Tap any feature you heard to see what the child was saying.</p></div></div>
+  <div class="chips" id="features"></div>
+  <div class="feature-out" id="featureOut" aria-live="polite"></div>
+</section>
+
+<!-- 3 -->
+<section aria-labelledby="h3s">
+  <div class="sec-head"><div class="badge b-gold">3</div><div><h2 id="h3s">What might the child have heard?</h2><p>For each area, pick the message that's closer to what that moment sent.</p></div></div>
+  <div class="pattern" id="pattern"></div>
+  <p class="tally" id="tally" aria-live="polite">Choose one message in each row to see the pattern.</p>
+</section>
+
+<!-- 4 -->
+<section aria-labelledby="h4s">
+  <div class="sec-head"><div class="badge b-black">4</div><div><h2 id="h4s">Reflect: Notice, Wonder, Affirm, Bridge, Partner</h2><p class="js-arcnote">Start with noticing, not the fix. The shift comes from what you see for yourself.</p></div></div>
+  <div class="arc" id="arc"></div>
+</section>
+
+<!-- 5 -->
+<section aria-labelledby="h5s">
+  <div class="sec-head"><div class="badge b-green">5</div><div><h2 id="h5s">Reframe it</h2><p>Pick a phrase to start from, or write your own. The same moves work with children, families, and providers.</p></div></div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="colhead" aria-hidden="true"><span>Instead of…</span><span>Try…</span></div>
+  <div class="bank" id="bank"></div>
+  <div class="field"><label for="reframe">Next time, I'll say…</label><textarea id="reframe" placeholder="“Every day? What does he do when he jumps?”"></textarea></div>
+  <div><span class="qlabel">The move I'm using</span><div class="movechips" id="moves"></div></div>
+</section>
+
+<!-- 6 -->
+<section aria-labelledby="h6s">
+  <div class="sec-head"><div class="badge b-red">6</div><div><h2 id="h6s">Partner with the family</h2><p>Use these at intake, during home visits, or at parent conferences.</p></div></div>
+  <p class="fam-quote">Home and community language practices aren't preparation for learning. <span>They are learning.</span></p>
+  <div class="chips" id="famQs"></div>
+  <div class="field"><label for="famNotes">What I'll ask, or what I learned</label><textarea id="famNotes" placeholder="Grandma tells the family stories at Sunday dinner. He loves call-and-response songs."></textarea></div>
+  <p class="callout"><b>If a family asks you to correct:</b> listen first. The worry behind the request is real and was earned through history. Then explain that home language is a bridge to reading and not a barrier. You'll teach standardized English as an addition to his home language, not a replacement for it.</p>
+</section>
+
+<!-- 7 -->
+<section aria-labelledby="h7s">
+  <div class="sec-head"><div class="badge b-gold">7</div><div><h2 id="h7s">One shift, starting Monday</h2><p>Finish the sentence. Tap a starter for your role if you're stuck.</p></div></div>
+  <p class="commit-stem">“On Monday, one thing I will do differently when I hear a child's home language is…”</p>
+  <div class="starters" id="starters"></div>
+  <div class="field"><label for="shift">My one shift</label><textarea id="shift" placeholder="Swap one correction for “Tell me more.”"></textarea></div>
+</section>
+
+<!-- summary -->
+<section aria-labelledby="hsum">
+  <div class="sec-head"><div class="badge b-black">✓</div><div><h2 id="hsum">My reflection</h2><p>Copy this into your notes, a coaching log, or a team meeting agenda.</p></div></div>
+  <div class="summary">
+    <pre id="summary"></pre>
+    <div class="actions">
+      <button type="button" class="btn primary" id="copyBtn">Copy reflection</button>
+      <button type="button" class="btn ghost" id="exampleBtn">Fill in an example</button>
+      <button type="button" class="btn danger" id="clearBtn">Clear all</button>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+    <div class="confirm" id="confirm" hidden>
+      <span>Clear every answer on this page?</span>
+      <button type="button" class="btn danger" id="confirmYes">Yes, clear</button>
+      <button type="button" class="btn ghost" id="confirmNo">Keep my notes</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Adapted from <b>From Correction to Connection: Reflective Coaching Practices that Affirm Black Language and Strengthen Early Literacy</b>, a session by Black Californians United for Early Care and Education (BlackECE) at the R&amp;R Network + TFC Joint Annual Conference, October 8, 2026. The reflection sequence draws on emerging lessons from the Ancestral Coaching Model™ pilot.</p>
+  <p>Resources: <a href="https://linktr.ee/BLanguage26" target="_blank" rel="noopener">linktr.ee/BLanguage26</a> · <a href="https://blackece.org" target="_blank" rel="noopener">blackece.org</a></p>
+</footer>
+</div>
+
+<script>
+(function(){
+const KEY='c2c-reflection-v1';
+const $=id=>document.getElementById(id);
+
+const FEATURES=[
+  {id:'be',name:'Habitual be',ex:'“She be reading.”',mean:'She reads regularly. It’s a habit.'},
+  {id:'zero',name:'Zero copula',ex:'“She reading.”',mean:'She is reading right now.'},
+  {id:'bin',name:'Stressed BIN',ex:'“I BIN knew that.”',mean:'I’ve known that for a long time.'},
+  {id:'done',name:'Completive done',ex:'“I done finished.”',mean:'I have already finished.'},
+  {id:'neg',name:'Multiple negation',ex:'“Nobody didn’t say nothing.”',mean:'Emphatic negation: nobody said anything. Standard in Spanish, French, and Chaucer’s English.'},
+  {id:'nem',name:'Associative “nem”',ex:'“My mama nem came over.”',mean:'My mom and the people with her (family, her group) came over.'},
+  {id:'was',name:'Generalized “was”',ex:'“We was at the park!”',mean:'We were at the park. The meaning is fully clear.'}
+];
+const PATTERN=[
+  {id:'belong',area:'Belonging',c:'“My way of talking doesn’t belong here.”',k:'“Who I am and how I talk are welcome here.”'},
+  {id:'conf',area:'Communication confidence',c:'“It’s safer to stay quiet.”',k:'“My words matter. I want to say more.”'},
+  {id:'fam',area:'Family partnership',c:'“They think the way we talk at home is wrong.”',k:'“They see our home language as a strength.”'}
+];
+const ARC={
+  self:[
+    {id:'notice',name:'Notice',sub:'Observe',qs:['What did I notice about how this child communicates?'],ph:'He gets louder and faster when he’s excited, and uses his hands to show the jump.'},
+    {id:'wonder',name:'Wonder',sub:'Get curious',qs:['What was I hoping would happen when I corrected or redirected?','Whose language norms am I holding as “correct”?'],ph:'I wanted him ready for kindergarten. I was holding onto the way I was taught to talk at school.'},
+    {id:'affirm',name:'Affirm',sub:'Name the strength',qs:['What strength did this child show in that moment?'],ph:'He told a story with action and detail, and used habitual “be” correctly.'},
+    {id:'bridge',name:'Bridge',sub:'Build toward the book',qs:['What is one way I can build a bridge instead of a wall?'],ph:'Respond to his meaning first. Later, read a book together and compare: “In the book, the author says it like this…”'},
+    {id:'partner',name:'Partner',sub:'Bring in family',qs:['How might this child’s family describe them as a talker?'],ph:'Probably as a storyteller who keeps everyone laughing. I’ll ask his dad.'}
+  ],
+  coach:[
+    {id:'notice',name:'Notice',sub:'Observe',qs:['Ask: “What did you notice about how she talks when she’s excited?”','What did the provider notice? What did I notice?'],ph:'She noticed he talks the most during block play.'},
+    {id:'wonder',name:'Wonder',sub:'Get curious',qs:['Ask: “What were you hoping would happen when you corrected him?”','What care or worry is behind the correction?'],ph:'His mom asked her to. She wants him ready for kindergarten. The correction comes from love.'},
+    {id:'affirm',name:'Affirm',sub:'Name the strength',qs:['Affirm the provider and the child. For example: “That story had a beginning, middle, and end. That’s literacy.”'],ph:'Named how much she cares about his future. Named his storytelling as literacy.'},
+    {id:'bridge',name:'Bridge',sub:'Build toward the book',qs:['Ask: “How could you build from his words toward the book’s words?”'],ph:'She’ll try responding to meaning first, then comparing home and book language side by side during read-aloud.'},
+    {id:'partner',name:'Partner',sub:'Bring in family',qs:['Ask: “What might his family tell us about him as a talker?”','How can we honor what the family wants for this child?'],ph:'She’ll ask mom which stories he loves at home and share how home language builds toward reading.'}
+  ]
+};
+const BANK={
+  child:[
+    ['“That’s not how you say it.”','“I hear you! Tell me more.”'],
+    ['“Say it the right way.”','“In our book, the author says it like this…”'],
+    ['“Use your school words.”','“You told that with so much detail!”'],
+    ['“Stop saying ‘ain’t.’ That’s not a real word.”','“You really mean it! What happened next?”']
+  ],
+  family:[
+    ['“We need to fix his grammar.”','“He’s a strong storyteller. What stories does he love at home?”'],
+    ['“His parents don’t talk to him enough at home.”','“What songs, rhymes, or sayings does he love at home?”'],
+    ['“You should only speak proper English with her.”','“Keep talking with her the way you do. We’ll build toward book language together.”']
+  ],
+  provider:[
+    ['“You need to stop correcting.”','“What do you notice when she’s talking freely?”'],
+    ['“She’s behind in language. She doesn’t talk right.”','“What does she do well when she communicates? Let’s start there.”'],
+    ['“That’s the wrong approach.”','“What were you hoping would happen in that moment?”']
+  ]
+};
+const TABS=[['child','With a child'],['family','With a family'],['provider','With a provider']];
+const MOVES=['Expand','Invite','Affirm','Bridge'];
+const FAMQ=['What languages and ways of talking live in your home?','Who are the storytellers in your family?','What songs, rhymes, sayings, or prayers does your child love?','How do you want us to honor your child’s language here?'];
+const STARTERS=[
+  ['Coaches & trainers','Open my next visit with “What do you notice?”'],
+  ['R&R / AP / QI staff','Add a home-language question to intake or TA.'],
+  ['Leaders','Review one form or tool for deficit language.'],
+  ['Educators & family staff','Swap one correction for “Tell me more.”']
+];
+
+let state={mode:'self',features:[],pattern:{},arc:{},moves:[],famQs:[],tab:'child'};
+const TEXT_IDS=['childSaid','adultSaid','childResponse','reframe','famNotes','shift'];
+
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.state){state=Object.assign(state,s.state);TEXT_IDS.forEach(id=>{if(s.text&&s.text[id]!=null)$(id).value=s.text[id];});}}catch(e){}}
+let saveT;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{const text={};TEXT_IDS.forEach(id=>text[id]=$(id).value);localStorage.setItem(KEY,JSON.stringify({state,text}));}catch(e){}},250);}
+
+function toggle(arr,v){const i=arr.indexOf(v);i<0?arr.push(v):arr.splice(i,1);}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function renderMode(){
+  document.querySelectorAll('.mode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===state.mode));
+  const coach=state.mode==='coach';
+  $('modeNote').textContent=coach?'You’re preparing for, or debriefing, a coaching conversation with a provider. The prompts become questions to ask them.':'You’re reflecting on a moment from your own work with a child.';
+  document.querySelector('.js-adult').textContent=coach?'The provider said or did…':'I said or did…';
+  document.querySelector('.js-arcnote').textContent=coach?'Don’t open with the fix. Start with noticing and wondering so the provider finds the shift herself.':'Start with noticing, not the fix. The shift comes from what you see for yourself.';
+  renderArc();
+}
+function renderFeatures(){
+  $('features').innerHTML=FEATURES.map(f=>`<button type="button" class="chip" id="feat-${f.id}" data-f="${f.id}" aria-pressed="${state.features.includes(f.id)}">${f.name}</button>`).join('');
+  const sel=FEATURES.filter(f=>state.features.includes(f.id));
+  $('featureOut').innerHTML=sel.length?sel.map(f=>`<div class="feature-card"><b>${f.name}</b> · <em>${f.ex}</em><br>${f.mean}</div>`).join('')+'<p class="hint">Each feature is systematic and predictable. A child who uses it is showing linguistic knowledge, not a gap.</p>':'';
+}
+function renderPattern(){
+  $('pattern').innerHTML=PATTERN.map(p=>`<div class="prow"><h3>${p.area}</h3><div class="opts">
+    <button type="button" class="opt c" id="pat-${p.id}-c" data-p="${p.id}" data-v="c" aria-pressed="${state.pattern[p.id]==='c'}"><small>Correction</small>${p.c}</button>
+    <button type="button" class="opt k" id="pat-${p.id}-k" data-p="${p.id}" data-v="k" aria-pressed="${state.pattern[p.id]==='k'}"><small>Connection</small>${p.k}</button></div></div>`).join('');
+  const vals=PATTERN.map(p=>state.pattern[p.id]).filter(Boolean);
+  const c=vals.filter(v=>v==='c').length,k=vals.filter(v=>v==='k').length;
+  let msg='Choose one message in each row to see the pattern.';
+  if(vals.length===3){
+    if(c===0) msg='<b>All three point to connection.</b> Name what you did so you can repeat it on purpose.';
+    else if(k===0) msg='<b>All three point to correction.</b> That’s usually a sign of care, not carelessness. A child who gets corrected every time they talk learns to talk less, so keep going: the next steps help you find a new move.';
+    else msg=`<b>${k} of 3 point to connection, ${c} to correction.</b> Look at the correction row${c>1?'s':''} as you reflect below.`;
+  }
+  $('tally').innerHTML=msg;
+}
+function renderArc(){
+  $('arc').innerHTML=ARC[state.mode].map(m=>`<div class="move"><div class="move-name"><span>${m.sub}</span>${m.name}</div><div class="move-body">${m.qs.map(q=>`<p class="q">${q}</p>`).join('')}<textarea id="arc-${m.id}" data-a="${m.id}" aria-label="${m.name}: your notes" placeholder="${esc(m.ph)}">${esc(state.arc[m.id]||'')}</textarea></div></div>`).join('');
+}
+function renderBank(){
+  $('tabs').innerHTML=TABS.map(([id,l])=>`<button type="button" role="tab" class="tab" id="tab-${id}" data-t="${id}" aria-selected="${state.tab===id}">${l}</button>`).join('');
+  $('bank').innerHTML=BANK[state.tab].map((p,i)=>`<div class="pair"><div class="no">${p[0]}</div><div class="yes"><span>${p[1]}</span><button type="button" class="use" data-i="${i}" aria-label="Use this reframe">Use</button></div></div>`).join('');
+}
+function renderMoves(){$('moves').innerHTML=MOVES.map(m=>`<button type="button" class="chip" id="move-${m}" data-m="${m}" aria-pressed="${state.moves.includes(m)}">${m}</button>`).join('');}
+function renderFam(){$('famQs').innerHTML=FAMQ.map((q,i)=>`<button type="button" class="chip" id="fq-${i}" data-q="${i}" aria-pressed="${state.famQs.includes(i)}">${q}</button>`).join('');}
+function renderStarters(){$('starters').innerHTML=STARTERS.map(([r,s],i)=>`<button type="button" class="starter" data-s="${i}"><small>${r}</small>${s}</button>`).join('');}
+
+function summary(){
+  const v=id=>$(id).value.trim();
+  const coach=state.mode==='coach';
+  const L=[];
+  L.push('FROM CORRECTION TO CONNECTION: REFLECTION');
+  L.push(coach?'Mode: coaching a provider':'Mode: my own practice');
+  L.push('');
+  L.push('THE MOMENT');
+  L.push('Child said: '+(v('childSaid')||'—'));
+  L.push((coach?'Provider said/did: ':'I said/did: ')+(v('adultSaid')||'—'));
+  L.push('Then the child: '+(v('childResponse')||'—'));
+  const f=FEATURES.filter(x=>state.features.includes(x.id));
+  if(f.length){L.push('');L.push('LANGUAGE FEATURES I HEARD');f.forEach(x=>L.push('• '+x.name+' ('+x.ex+'): '+x.mean));}
+  const pv=PATTERN.filter(p=>state.pattern[p.id]);
+  if(pv.length){L.push('');L.push('WHAT THE CHILD MAY HAVE HEARD');pv.forEach(p=>L.push('• '+p.area+': '+(state.pattern[p.id]==='c'?'Correction, '+p.c:'Connection, '+p.k)));}
+  L.push('');L.push('REFLECTION');
+  ARC[state.mode].forEach(m=>L.push('• '+m.name+': '+((state.arc[m.id]||'').trim()||'—')));
+  L.push('');L.push('MY REFRAME');L.push(v('reframe')||'—');
+  if(state.moves.length)L.push('Move: '+state.moves.join(', '));
+  if(state.famQs.length||v('famNotes')){L.push('');L.push('FAMILY PARTNERSHIP');state.famQs.slice().sort().forEach(i=>L.push('• Ask: '+FAMQ[i]));if(v('famNotes'))L.push(v('famNotes'));}
+  L.push('');L.push('ONE SHIFT, STARTING MONDAY');L.push(v('shift')||'—');
+  $('summary').textContent=L.join('\n');
+}
+function all(){renderMode();renderFeatures();renderPattern();renderBank();renderMoves();renderFam();renderStarters();summary();}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.mode){state.mode=t.dataset.mode;renderMode();}
+  else if(t.dataset.f){toggle(state.features,t.dataset.f);renderFeatures();}
+  else if(t.dataset.p){state.pattern[t.dataset.p]=state.pattern[t.dataset.p]===t.dataset.v?undefined:t.dataset.v;renderPattern();}
+  else if(t.dataset.t){state.tab=t.dataset.t;renderBank();}
+  else if(t.classList.contains('use')){$('reframe').value=BANK[state.tab][+t.dataset.i][1].replace(/^“|”$/g,'');$('reframe').focus();}
+  else if(t.dataset.m){toggle(state.moves,t.dataset.m);renderMoves();}
+  else if(t.dataset.q!=null){toggle(state.famQs,+t.dataset.q);renderFam();}
+  else if(t.dataset.s!=null){$('shift').value=STARTERS[+t.dataset.s][1];}
+  else return;
+  summary();save();
+});
+document.addEventListener('input',e=>{
+  if(e.target.dataset.a){state.arc[e.target.dataset.a]=e.target.value;}
+  summary();save();
+});
+
+$('copyBtn').addEventListener('click',()=>{
+  const txt=$('summary').textContent;
+  const done=()=>{$('status').textContent='Copied';setTimeout(()=>$('status').textContent='',2500);};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents($('summary'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('status').textContent='Selected. Press Ctrl+C or Cmd+C to copy.';};
+  try{navigator.clipboard.writeText(txt).then(done,fallback);}catch(err){fallback();}
+});
+$('clearBtn').addEventListener('click',()=>{$('confirm').hidden=false;});
+$('confirmNo').addEventListener('click',()=>{$('confirm').hidden=true;});
+$('confirmYes').addEventListener('click',()=>{
+  const mode=state.mode;state={mode,features:[],pattern:{},arc:{},moves:[],famQs:[],tab:'child'};
+  TEXT_IDS.forEach(id=>$(id).value='');$('confirm').hidden=true;all();save();$('status').textContent='Cleared';
+});
+$('exampleBtn').addEventListener('click',()=>{
+  const coach=state.mode==='coach';
+  $('childSaid').value='He be jumpin’ on the couch!';
+  $('adultSaid').value=coach?'“Say it right: he IS jumping.” His mom asked her to correct his grammar.':'“Say it the right way: he IS jumping.”';
+  $('childResponse').value='Stopped the story and went back to playing.';
+  state.features=['be'];state.pattern={belong:'c',conf:'c',fam:'k'};
+  state.arc={};ARC[state.mode].forEach(m=>state.arc[m.id]=m.ph);
+  $('reframe').value='Every day? What does he do when he jumps?';state.moves=['Expand','Invite'];
+  state.famQs=[1];$('famNotes').value='Ask mom who the storytellers are at home.';
+  $('shift').value=coach?'Open my next visit with “What do you notice?”':'Swap one correction for “Tell me more.”';
+  all();save();$('status').textContent='Example filled in. Clear all to start your own.';
+});
+
+load();all();
+})();
+</script>
+
+</body>
+</html>
